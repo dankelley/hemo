@@ -44,12 +44,46 @@
 
 \begin{abstract}
 
-The \verb@hemo@ package...
+The \verb@hemo@ package aids health monitoring by providing tools for graphing
+timeseries of blood pressure and other data that one may monitor easily at home.
 
 \end{abstract}
 
 \section{Introduction}
-...
+
+The \verb@hemo@ package is intended to help in home health monitoring.
+
+The user stores health data in a text file, such as the one shown in
+Figure~\ref{fig:data}.  The following commands will produce a time-series graph of these data.
+\begin{verbatim}
+library(hemo)
+h <- read.hemo("health.dat")
+plot(h, style="ts")
+\end{verbatim}
+
+\begin{figure}[ht]
+\begin{verbatim}
+BP 2010-01-30 08:06 107 67 53
+BP 2010-01-30 09:44 98 76 55
+W  2010-01-30 09:44 150
+BP 2010-01-30 11:01 93 78 55
+BP 2010-01-30 11:56 97 68 65
+BP 2010-01-30 12:51 91 66 54
+BP 2010-01-30 14:47 90 73 59
+BP 2010-01-30 15:49 94 69 54
+BP 2010-01-30 16:55 90 72 55
+BP 2010-01-31 08:06 79 65 54
+BP 2010-01-31 09:44 97 77 53
+BP 2010-01-31 11:01 92 75 55
+BP 2010-01-31 11:56 99 69 56
+BP 2010-01-31 12:51 93 63 52
+BP 2010-01-31 14:47 88 76 55
+BP 2010-01-31 15:49 92 65 54
+BP 2010-01-31 16:55 93 71 59
+\end{verbatim}
+\caption{\label{fig:data}Sample data file, called hemo.dat in the
+  code examples.}
+\end{figure}
 
 \printindex
 \end{document}
