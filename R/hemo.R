@@ -5,11 +5,13 @@ pairs.plot <- function(x, which=c(2,3,6), cex=par("cex"))
 
 ts.plot <- function(t, x, ylab="", type='b', show.stats=TRUE, cex=par("cex"), tlim=range(t))
 {
-    plot(t, x, type=type, xlab="", ylab=ylab, xlim=tlim)
-    if (show.stats) {
-        m <- sprintf("%.0f", mean(x))
-        sd <- sprintf("%.0f", sd(x))
-        mtext(substitute(m %+-% sd, list(m=m, sd=sd)), side=4, cex=cex)
+    if (!is.null(t) && !is.null(x)) {
+        plot(t, x, type=type, xlab="", ylab=ylab, xlim=tlim)
+        if (show.stats) {
+            m <- sprintf("%.0f", mean(x))
+            sd <- sprintf("%.0f", sd(x))
+            mtext(substitute(m %+-% sd, list(m=m, sd=sd)), side=4, cex=cex)
+        }
     }
 }
 
@@ -158,7 +160,7 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
     if (style == "ts") {
         par(mgp=c(2, 3/4, 0))
         par(mar=c(2.5, 3, 1, 1.5))
-        if (missing(which)) which <- c(1,2,3,4,5)
+        if (missing(which)) which <- c(1,2,5,6)
         lw <- length(which)
         par(mfrow=c(lw, 1))
         tlim <- range(c(x$bp$t, x$w$t))

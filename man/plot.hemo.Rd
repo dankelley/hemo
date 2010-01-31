@@ -34,7 +34,7 @@
     \item \code{which=6} for weight.
     \item \code{which=7} for statistics.
   }
-  If \code{which} is not provided, then the value \code{c(1,2,3,4,5)}
+  If \code{which} is not provided, then the value \code{c(1,2,3,5,6)}
   will be used for \code{ts} plots,  \code{c(1,2,5,7)} for
   \code{clock} plots, or \code{c(2,3,6)} for \code{pairs} plots.
 }
