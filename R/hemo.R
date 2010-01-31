@@ -3,9 +3,9 @@ pairs.plot <- function(x, which=c(2,3,6), cex=par("cex"))
     plot(x$bp[which])
 }
 
-ts.plot <- function(t, x, ylab="", type='l', show.stats=TRUE, cex=par("cex"))
+ts.plot <- function(t, x, ylab="", type='b', show.stats=TRUE, cex=par("cex"), tlim=range(t))
 {
-    plot(t, x, type=type, xlab="", ylab=ylab)
+    plot(t, x, type=type, xlab="", ylab=ylab, xlim=tlim)
     if (show.stats) {
         m <- sprintf("%.0f", mean(x))
         sd <- sprintf("%.0f", sd(x))
@@ -110,7 +110,20 @@ read.hemo <- function(file, debug=FALSE)
     bp2 <- NULL
     pulse <- NULL
     time <- NULL
-    is.bp <- grep("^BP", lines)
+    is.w <- grep("^W", lines)           # weight
+    is.bp <- grep("^BP", lines)         # blood pressure
+    if (length(is.w) > 0) {
+        Ymd <- HM <- weight <- NULL
+        for (line in lines[is.w]) {
+            d <- strsplit(line, "[ ]+")
+            Ymd <- c(Ymd, d[[1]][2])
+            HM <- c(HM, d[[1]][3])
+            weight <- c(weight, d[[1]][4])
+        }
+        t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
+        weight <- as.numeric(weight)
+        w <- data.frame(t, weight)
+    } else w <- NULL
     if (length(is.bp) > 0) {
         if (debug) {
             cat("The following are to be interpreted as blood-pressure lines:\n")
@@ -132,51 +145,49 @@ read.hemo <- function(file, debug=FALSE)
                          map=(2*diastolic + systolic)/3,
                          pp=systolic-diastolic,
                          pulse.rate=pulse)
-    }
-    rval <- list(filename=filename, bp=bp)
+    } else bp <- NULL
+    rval <- list(filename=filename, bp=bp, w=w)
     class(rval) <- "hemo"
     rval
 }
 
-plot.hemo <- function(x, item=c("bp"),
-                      style=c("ts","clock","pairs"),
-                      which,
-                      cex=par("cex"),
-                      debug=FALSE,
-                      ...)
+plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
+                      cex=par("cex"), debug=FALSE, ...)
 {
-    item <- match.arg(item)
     style <- match.arg(style)
-    if (item == "bp") {
-        if (style == "ts") {
-            par(mgp=c(2, 3/4, 0))
-            par(mar=c(2.5, 3, 1, 1.5))
-            if (missing(which)) which <- c(1,2,3,4,5)
-            lw <- length(which)
-            par(mfrow=c(lw, 1))
-            for (w in which) {
-                if (1 == w) ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm]",  cex=cex)
-                if (2 == w) ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm]", cex=cex)
-                if (3 == w) ts.plot(x$bp$t, x$bp$map,        ylab="MAP [mm]",       cex=cex)
-                if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm]",        cex=cex)
-                if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [1/s]",    cex=cex)
-            }
-        } else if (style == "clock") {
-            if (missing(which)) which <- c(1,2,5,6)
-            lw <- length(which)
-            if (lw == 2)
-                par(mfrow=c(2,2))
-            else if (lw > 2)
-                par(mfrow=c(2,2))
-            par(mgp=c(1.25,1.5/3,0))
-            par(mar=c(1.5,1.5,1.5,1.5))
-            if (1 %in% which) clock.plot(x$bp$t, x$bp$systolic, " Systolic [mm]", R=c(90, 119), R.col="green", cex=cex)
-            if (2 %in% which) clock.plot(x$bp$t, x$bp$diastolic, " Diastolic [mm]", R=c(60,79), R.col="green", cex=cex)
-            if (3 %in% which) clock.plot(x$bp$t, x$bp$map, " MAP [mm]", R=2/3*c(90,60) + 1/3*c(119,79), R.col="green", cex=cex)
-            if (4 %in% which) clock.plot(x$bp$t, x$bp$pp, " PP [mm]", R=c(119,79) - c(90,60), R.col="green", cex=cex)
-            if (5 %in% which) clock.plot(x$bp$t, x$bp$pulse.rate, " Pulse [1/min]", cex=cex)
+    if (style == "ts") {
+        par(mgp=c(2, 3/4, 0))
+        par(mar=c(2.5, 3, 1, 1.5))
+        if (missing(which)) which <- c(1,2,3,4,5)
+        lw <- length(which)
+        par(mfrow=c(lw, 1))
+        tlim <- range(c(x$bp$t, x$w$t))
+        for (w in which) {
+            if (1 == w) ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm]",  cex=cex, tlim=tlim)
+            if (2 == w) ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm]", cex=cex, tlim=tlim)
+            if (3 == w) ts.plot(x$bp$t, x$bp$map,        ylab="MAP [mm]",       cex=cex, tlim=tlim)
+            if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm]",        cex=cex, tlim=tlim)
+            if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [1/s]",    cex=cex, tlim=tlim)
+            if (6 == w) ts.plot(x$w$t,  x$w$weight,      ylab="Weight [lb]",    cex=cex, tlim=tlim)
+        }
+    } else if (style == "clock") {
+        if (missing(which)) which <- c(1,2,5,7)
+        lw <- length(which)
+        if (lw == 2)
+            par(mfrow=c(2,2))
+        else if (lw > 2)
+            par(mfrow=c(2,2))
+        par(mgp=c(1.25,1.5/3,0))
+        par(mar=c(1.5,1.5,1.5,1.5))
+        for (w in which) {
+            if (1 == w) clock.plot(x$bp$t, x$bp$systolic,   " Systolic [mm]", R=c(90, 119), R.col="green", cex=cex)
+            if (2 == w) clock.plot(x$bp$t, x$bp$diastolic,  " Diastolic [mm]", R=c(60,79), R.col="green", cex=cex)
+            if (3 == w) clock.plot(x$bp$t, x$bp$map,        " MAP [mm]", R=2/3*c(90,60) + 1/3*c(119,79), R.col="green", cex=cex)
+            if (4 == w) clock.plot(x$bp$t, x$bp$pp,         " PP [mm]", R=c(119,79) - c(90,60), R.col="green", cex=cex)
+            if (5 == w) clock.plot(x$bp$t, x$bp$pulse.rate, " Pulse [1/min]", cex=cex)
+            if (6 == w) clock.plot(x$w$t,  x$w$weight,      "Weight [lb]", cex=cex)
             ## Stats
-            if (6 %in% which) {
+            if (7 == which) {
                 par(mar=c(0,0,0,0))
                 plot(0:1, 0:1, axes=FALSE, type='n', xlab="", ylab="")
                 xx <- 0
@@ -204,11 +215,9 @@ plot.hemo <- function(x, item=c("bp"),
                 yy <- yy + dy
                 text(xx, yy, "Min, Q1, Median, Q2, Max:", cex=1.2*par("cex"), pos=4)
             }
-        } else if (style == "pairs") {
-            if (missing(which)) which <- c(2,3,6)
-            pairs.plot(x, which=which)
-        } else stop("cannot handle plot style ", style)
-    } else stop("cannot handle item ", item)
+        }
+    } else if (style == "pairs") {
+        if (missing(which)) which <- c(2,3,6)
+        pairs.plot(x, which=which)
+    } else stop("cannot handle plot style ", style)
 }
-#a <- read.hemo("health.dat")
-#plot(a, style="clock", which=c(1,2,3,5))

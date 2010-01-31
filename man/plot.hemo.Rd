@@ -6,12 +6,11 @@
 
 \description{Plot hemo data}
 
-\usage{\method{plot}{hemo}(x, item=c("bp"), style=c("ts", "clock", "pairs"),
+\usage{\method{plot}{hemo}(x, style=c("ts", "clock", "pairs"),
      which, cex=par("cex"), debug=FALSE, ...)}
 
 \arguments{
   \item{x}{\code{hemo} object, typically result of \code{\link{read.hemo}}.}
-  \item{item}{\code{bp} for blood pressure.}
   \item{style}{\code{"ts"} for time-series, \code{"clock"} for r-theta
     with angle indicating time of day, or \code{"pairs"} for a pairs
     plot.}
@@ -32,10 +31,11 @@
     \item \code{which=3} for mean arterial pressure.
     \item \code{which=4} for pulse pressure.
     \item \code{which=5} for pulse rate.
-    \item \code{which=6} for statistics.
+    \item \code{which=6} for weight.
+    \item \code{which=7} for statistics.
   }
   If \code{which} is not provided, then the value \code{c(1,2,3,4,5)}
-  will be used for \code{ts} plots,  \code{c(1,2,5,6)} for
+  will be used for \code{ts} plots,  \code{c(1,2,5,7)} for
   \code{clock} plots, or \code{c(2,3,6)} for \code{pairs} plots.
 }
 
