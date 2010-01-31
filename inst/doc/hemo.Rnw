@@ -1,0 +1,55 @@
+% -*- fill-column: 80; comment-column: 50; -*-
+
+\documentclass{article}
+
+% \VignetteIndexEntry{Introduction to hemo}
+% \VignetteDepends{hemo}
+% \VignetteKeyword{health}
+
+\usepackage{url}
+\usepackage{fullpage}
+\usepackage{boxedminipage}
+\usepackage{hyperref}
+\usepackage{makeidx}
+\usepackage{titlesec}
+\makeindex
+
+\parskip=1.5ex plus 1.5ex minus 1.25ex
+
+\titleformat{\section}[block]{\normalfont\large\bfseries}{\thesection}{1em}{}
+\titlespacing{\section}{0em}{2em plus 0.5em minus 2em}{0.15em plus 0.15em minus 0.125em}
+\titleformat{\subsection}[block]{\normalfont\itshape}{\thesubsection}{1em}{}
+\titlespacing{\subsection}{0em}{1em plus 0.25em minus 1em}{-0.15em plus 0.15em minus 0.125em}
+
+\newcommand{\workedexercise}[2]{
+	\vspace{2ex plus 2ex minus 1ex}
+	\begin{boxedminipage}[c]{0.95\linewidth}
+		{\textbf{Exercise #1}.\hspace{1em}#2}
+	\end{boxedminipage}
+	\vspace{2ex plus 2ex minus 1ex}
+}
+\newcommand{\workedanswer}[2]{
+\goodbreak
+\vskip 1.5ex plus 0.5ex minus 0.5ex
+\noindent\textbf{Exercise #1 -- #2.}
+}
+
+
+\begin{document}
+
+\title{The HEMO package}
+\author{Dan E. Kelley}
+\maketitle
+
+
+\begin{abstract}
+
+The \verb@hemo@ package...
+
+\end{abstract}
+
+\section{Introduction}
+...
+
+\printindex
+\end{document}
