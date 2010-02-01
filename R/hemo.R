@@ -137,6 +137,7 @@ read.hemo <- function(file, debug=FALSE)
     bp2 <- NULL
     pulse <- NULL
     time <- NULL
+    is.c <- grep("^C", lines)           # comment
     is.w <- grep("^W", lines)           # weight
     is.bp <- grep("^BP", lines)         # blood pressure
     if (length(is.w) > 0) {
