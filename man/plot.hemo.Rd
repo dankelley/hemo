@@ -7,7 +7,7 @@
 \description{Plot hemo data}
 
 \usage{\method{plot}{hemo}(x, style=c("ts", "clock", "pairs"),
-     which, cex=par("cex"), debug=FALSE, ...)}
+     which, cex=par("cex"), debug=FALSE, show.mean=TRUE, ...)}
 
 \arguments{
   \item{x}{\code{hemo} object, typically result of \code{\link{read.hemo}}.}
@@ -19,6 +19,8 @@
   \item{cex}{base symbol size to use; some elements are smaller than this.}
   \item{debug}{boolean flag, set to \code{TRUE} to get printout of some
     things that may help in debuggin the code.}
+  \item{show.mean}{boolean flag, set to \code{TRUE} to get a ring with
+    mean value.  This is only used for clock plots.}
   \item{\dots}{optional arguments passed to plotting functions.}
 }
 

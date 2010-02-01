@@ -3,7 +3,8 @@ pairs.plot <- function(x, which=c(2,3,6), cex=par("cex"))
     plot(x$bp[which])
 }
 
-ts.plot <- function(t, x, ylab="", type='b', show.stats=TRUE, cex=par("cex"), tlim=range(t))
+ts.plot <- function(t, x, ylab="", type='b', cex=par("cex"), tlim=range(t),
+                    show.stats=TRUE)
 {
     if (!is.null(t) && !is.null(x)) {
         plot(t, x, type=type, xlab="", ylab=ylab, xlim=tlim)
@@ -15,7 +16,13 @@ ts.plot <- function(t, x, ylab="", type='b', show.stats=TRUE, cex=par("cex"), tl
     }
 }
 
-clock.plot <- function(t, x, label, R, R.col="gray", R.lty="solid", R.lwd=0.5*par("lwd"), col.axis="darkgray", cex=par("cex"))
+clock.plot <- function(t, x, label,
+                       R, R.col="gray", R.lty="solid", R.lwd=0.5*par("lwd"),
+                       lwd.axis=0.5*par("lwd"),
+                       col.axis=gray(.2),
+                       cex=par("cex"),
+                       green, orange, red,
+                       show.mean=TRUE)
 {
     ring <- function(R=1, col="gray", lty="dotted", lwd=0.5*par("lwd"))
     {
@@ -33,9 +40,22 @@ clock.plot <- function(t, x, label, R, R.col="gray", R.lty="solid", R.lwd=0.5*pa
     max.x <- max(x)
     lim <- max(x) * c(-1, 1) * 1.04
     plot(x * s, x * c, asp=1, xlab="", ylab="", xlim=lim, ylim=lim, axes=FALSE, type='n')
-    box()
+    w <- -max.x / 25
+    if (!missing(green)) {
+        polygon(c(-green[1], -green[1], -green[2], -green[2]),
+                c(0, w, w, 0), col="limegreen", border="limegreen")
+    }
+    if (!missing(orange)) {
+        polygon(c(-orange[1], -orange[1], -orange[2], -orange[2]),
+                c(0, w, w, 0), col="orange", border="orange")
+    }
+    if (!missing(red)) {
+        polygon(c(-red[1], -red[1], -red[2], -red[2]),
+                c(0, w, w, 0), col="red", border="red")
+    }
     at <- pretty(c(0,x), n=10)
-    axis(side=1, at=-at, labels=at, pos=0, cex.axis=3/4*cex, col=col.axis, col.axis=col.axis, mgp=c(1,1/2,1/4))
+    axis(side=1, at=-at, labels=at, pos=0, cex.axis=0.9*cex, col=col.axis, col.axis=col.axis, mgp=c(1,1/4,0), tcl=-0.3)
+    box()
     if (FALSE) {
         for (r in abs(at)) {
             ring(r, col=col.axis, lty="solid", lwd=0.5*par("lwd"))
@@ -53,9 +73,14 @@ clock.plot <- function(t, x, label, R, R.col="gray", R.lty="solid", R.lwd=0.5*pa
             ring(R[i], col=R.col[i], lwd=R.lwd[i], lty=R.lty[i])
         }
     }
+    if (show.mean) {
+        xmean <- mean(x)
+        ring(xmean, col=col.axis, lty="solid")
+    }
+
     ## axes
-    abline(h=0, lty="dotted", col=col.axis)
-    abline(v=0, lty="dotted", col=col.axis)
+    abline(h=0, lty="solid", col=col.axis, lwd=lwd.axis)
+    abline(v=0, lty="solid", col=col.axis, lwd=lwd.axis)
     mtext(side=1, "Midnight", cex=3/4*cex, col=col.axis)
     mtext(side=2, "6 AM", cex=3/4*cex, col=col.axis)
     mtext(side=3, "Noon", cex=3/4*cex, col=col.axis)
@@ -69,7 +94,7 @@ clock.plot <- function(t, x, label, R, R.col="gray", R.lty="solid", R.lwd=0.5*pa
     hx <- c(hx[1], hx, hx[length(hx)])
     hy <- h$density * max.x * 2
     hy <- c(0, hy, 0)
-    polygon(hx, hy, col=rgb(1,0,0,alpha=0.5))
+    polygon(hx, hy, col=rgb(0,0,1,alpha=0.5))
 }
 
 print.summary.hemo <- function(x, digits=max(6, getOption("digits")-1), ...)
@@ -154,7 +179,8 @@ read.hemo <- function(file, debug=FALSE)
 }
 
 plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
-                      cex=par("cex"), debug=FALSE, ...)
+                      cex=par("cex"), debug=FALSE,
+                      show.mean=TRUE, ...)
 {
     style <- match.arg(style)
     if (style == "ts") {
@@ -165,10 +191,10 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
         par(mfrow=c(lw, 1))
         tlim <- range(c(x$bp$t, x$w$t))
         for (w in which) {
-            if (1 == w) ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm]",  cex=cex, tlim=tlim)
-            if (2 == w) ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm]", cex=cex, tlim=tlim)
-            if (3 == w) ts.plot(x$bp$t, x$bp$map,        ylab="MAP [mm]",       cex=cex, tlim=tlim)
-            if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm]",        cex=cex, tlim=tlim)
+            if (1 == w) ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm Hg]",  cex=cex, tlim=tlim)
+            if (2 == w) ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm Hg]", cex=cex, tlim=tlim)
+            if (3 == w) ts.plot(x$bp$t, x$bp$map,        ylab="MAP [mm Hg]",       cex=cex, tlim=tlim)
+            if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm Hg]",        cex=cex, tlim=tlim)
             if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [1/s]",    cex=cex, tlim=tlim)
             if (6 == w) ts.plot(x$w$t,  x$w$weight,      ylab="Weight [lb]",    cex=cex, tlim=tlim)
         }
@@ -182,14 +208,20 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
         par(mgp=c(1.25,1.5/3,0))
         par(mar=c(1.5,1.5,1.5,1.5))
         for (w in which) {
-            if (1 == w) clock.plot(x$bp$t, x$bp$systolic,   " Systolic [mm]", R=c(90, 119), R.col="green", cex=cex)
-            if (2 == w) clock.plot(x$bp$t, x$bp$diastolic,  " Diastolic [mm]", R=c(60,79), R.col="green", cex=cex)
-            if (3 == w) clock.plot(x$bp$t, x$bp$map,        " MAP [mm]", R=2/3*c(90,60) + 1/3*c(119,79), R.col="green", cex=cex)
-            if (4 == w) clock.plot(x$bp$t, x$bp$pp,         " PP [mm]", R=c(119,79) - c(90,60), R.col="green", cex=cex)
-            if (5 == w) clock.plot(x$bp$t, x$bp$pulse.rate, " Pulse [1/min]", cex=cex)
-            if (6 == w) clock.plot(x$w$t,  x$w$weight,      "Weight [lb]", cex=cex)
+            if (1 == w) clock.plot(x$bp$t, x$bp$systolic,   " Systolic [mm Hg]",
+                cex=cex, show.mean=show.mean, green=c(90,119), orange=c(120,139.5), red=c(139.5,159))
+            if (2 == w) clock.plot(x$bp$t, x$bp$diastolic,  " Diastolic [mm Hg]",
+                cex=cex, show.mean=show.mean, green=c(60,79), orange=c(80,89.5), red=c(89.5,99))
+            if (3 == w) clock.plot(x$bp$t, x$bp$map,        " MAP [mm Hg]",
+                cex=cex, show.mean=show.mean)
+            if (4 == w) clock.plot(x$bp$t, x$bp$pp,         " PP [mm Hg]",
+                cex=cex, show.mean=show.mean)
+            if (5 == w) clock.plot(x$bp$t, x$bp$pulse.rate, " Pulse [1/min]",
+                cex=cex, show.mean=show.mean)
+            if (6 == w) clock.plot(x$w$t,  x$w$weight,      "Weight [lb]",
+                cex=cex, show.mean=show.mean)
             ## Stats
-            if (7 == which) {
+            if (7 == w) {
                 par(mar=c(0,0,0,0))
                 plot(0:1, 0:1, axes=FALSE, type='n', xlab="", ylab="")
                 xx <- 0
@@ -197,25 +229,25 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
                 yy <- dy
                 text(xx, yy, paste("  Pulse:",
                                    paste(format(fivenum(x$bp$pulse.rate), digits=1), collapse=" ")),
-                     cex=par("cex"), pos=4)
+                     cex=cex, pos=4)
                 yy <- yy + dy
                 text(xx, yy, paste("  Pulse pressure:",
                                    paste(format(fivenum(x$bp$pp), digits=1), collapse=" ")),
-                     cex=par("cex"), pos=4)
+                     cex=cex, pos=4)
                 yy <- yy + dy
                 text(xx, yy, paste("  Arterial pressure:",
                                    paste(format(fivenum(x$bp$map), digits=1), collapse=" ")),
-                     cex=par("cex"), pos=4)
+                     cex=cex, pos=4)
                 yy <- yy + dy
                 text(xx, yy, paste("  Diastolic:",
                                    paste(format(fivenum(x$bp$diastolic), digits=1), collapse=" ")),
-                     cex=par("cex"), pos=4)
+                     cex=cex, pos=4)
                 yy <- yy + dy
                 text(xx, yy, paste("  Systolic:",
                                    paste(format(fivenum(x$bp$systolic), digits=1), collapse=" ")),
-                     cex=par("cex"), pos=4)
+                     cex=cex, pos=4)
                 yy <- yy + dy
-                text(xx, yy, "Min, Q1, Median, Q2, Max:", cex=1.2*par("cex"), pos=4)
+                text(xx, yy, "Min, Q1, Median, Q2, Max:", cex=1.2*cex, pos=4)
             }
         }
     } else if (style == "pairs") {
