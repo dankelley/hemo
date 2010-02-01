@@ -195,8 +195,8 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
             if (2 == w) ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm Hg]", cex=cex, tlim=tlim)
             if (3 == w) ts.plot(x$bp$t, x$bp$map,        ylab="MAP [mm Hg]",       cex=cex, tlim=tlim)
             if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm Hg]",        cex=cex, tlim=tlim)
-            if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [1/s]",    cex=cex, tlim=tlim)
-            if (6 == w) ts.plot(x$w$t,  x$w$weight,      ylab="Weight [lb]",    cex=cex, tlim=tlim)
+            if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [beats/min]", cex=cex, tlim=tlim)
+            if (6 == w) ts.plot(x$w$t,  x$w$weight,      ylab="Weight [lb]",       cex=cex, tlim=tlim)
         }
     } else if (style == "clock") {
         if (missing(which)) which <- c(1,2,5,7)
@@ -216,9 +216,9 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
                 cex=cex, show.mean=show.mean)
             if (4 == w) clock.plot(x$bp$t, x$bp$pp,         " PP [mm Hg]",
                 cex=cex, show.mean=show.mean)
-            if (5 == w) clock.plot(x$bp$t, x$bp$pulse.rate, " Pulse [1/min]",
+            if (5 == w) clock.plot(x$bp$t, x$bp$pulse.rate, " Pulse [beats/min]",
                 cex=cex, show.mean=show.mean)
-            if (6 == w) clock.plot(x$w$t,  x$w$weight,      "Weight [lb]",
+            if (6 == w) clock.plot(x$w$t,  x$w$weight,      " Weight [lb]",
                 cex=cex, show.mean=show.mean)
             ## Stats
             if (7 == w) {
