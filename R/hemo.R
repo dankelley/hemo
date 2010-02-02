@@ -195,6 +195,8 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
                       show.lm=TRUE, ...)
 {
     style <- match.arg(style)
+    opar <- par(no.readonly=TRUE)
+    on.exit(par(opar))
     if (style == "ts") {
         par(mgp=c(2, 3/4, 0))
         par(mar=c(2.5, 3, 1, 1.5))
