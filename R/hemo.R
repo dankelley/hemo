@@ -3,11 +3,19 @@ pairs.plot <- function(x, which=c(2,3,6), cex=par("cex"))
     plot(x$bp[which])
 }
 
-ts.plot <- function(t, x, ylab="", type='b', cex=par("cex"), tlim=range(t),
-                    show.stats=TRUE)
+ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
+                    show.stats=TRUE, show.lm=TRUE)
 {
     if (!is.null(t) && !is.null(x)) {
-        plot(t, x, type=type, xlab="", ylab=ylab, xlim=tlim)
+        plot(t, x, type='n', xlab="", ylab=ylab, xlim=tlim)
+        if (show.lm) {
+            t0 <- t - t[1]          # otherwise lm is poor
+            m <- lm(x ~ t0)
+            tt <- seq(min(t0), max(t0), length.out=100)
+            pp <- predict(m, newdata=list(t0=tt))
+            lines(as.POSIXct(tt+t[1]), pp)
+        }
+        points(t, x)
         if (show.stats) {
             m <- sprintf("%.0f", mean(x))
             sd <- sprintf("%.0f", sd(x))
@@ -181,7 +189,8 @@ read.hemo <- function(file, debug=FALSE)
 
 plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
                       cex=par("cex"), debug=FALSE,
-                      show.mean=TRUE, ...)
+                      show.mean=TRUE,
+                      show.lm=TRUE, ...)
 {
     style <- match.arg(style)
     if (style == "ts") {
@@ -192,12 +201,12 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
         par(mfrow=c(lw, 1))
         tlim <- range(c(x$bp$t, x$w$t))
         for (w in which) {
-            if (1 == w) ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm Hg]",  cex=cex, tlim=tlim)
-            if (2 == w) ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm Hg]", cex=cex, tlim=tlim)
-            if (3 == w) ts.plot(x$bp$t, x$bp$map,        ylab="MAP [mm Hg]",       cex=cex, tlim=tlim)
-            if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm Hg]",        cex=cex, tlim=tlim)
-            if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [beats/min]", cex=cex, tlim=tlim)
-            if (6 == w) ts.plot(x$w$t,  x$w$weight,      ylab="Weight [lb]",       cex=cex, tlim=tlim)
+            if (1 == w) ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm Hg]",  cex=cex, tlim=tlim, show.lm=show.lm)
+            if (2 == w) ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm Hg]", cex=cex, tlim=tlim, show.lm=show.lm)
+            if (3 == w) ts.plot(x$bp$t, x$bp$map,        ylab="MAP [mm Hg]",       cex=cex, tlim=tlim, show.lm=show.lm)
+            if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm Hg]",        cex=cex, tlim=tlim, show.lm=show.lm)
+            if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [beats/min]", cex=cex, tlim=tlim, show.lm=show.lm)
+            if (6 == w) ts.plot(x$w$t,  x$w$weight,      ylab="Weight [lb]",       cex=cex, tlim=tlim, show.lm=show.lm)
         }
     } else if (style == "clock") {
         if (missing(which)) which <- c(1,2,5,7)
