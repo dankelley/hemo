@@ -12,8 +12,10 @@ ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
             t0 <- t - t[1]          # otherwise lm is poor
             m <- lm(x ~ t0)
             tt <- seq(min(t0), max(t0), length.out=100)
-            pp <- predict(m, newdata=list(t0=tt))
-            lines(as.POSIXct(tt+t[1]), pp)
+            pp.ci <- predict(m, newdata=list(t0=tt), interval="confidence")
+            lines(as.POSIXct(tt+t[1]), pp.ci[,1],col='black')
+            lines(as.POSIXct(tt+t[1]), pp.ci[,2],col='gray')
+            lines(as.POSIXct(tt+t[1]), pp.ci[,3],col='gray')
         }
         points(t, x)
         if (show.stats) {
