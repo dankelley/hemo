@@ -68,8 +68,8 @@ plot(hemo, style="ts")
 @
 \begin{figure}[ht]
 \begin{center}
-\setkeys{Gin}{width=.7\textwidth}
-<<label=tsfig,fig=TRUE,width=7,height=4,echo=FALSE>>=
+\setkeys{Gin}{width=\textwidth}
+<<label=tsfig,fig=TRUE,width=7,height=7,echo=FALSE>>=
 <<tsplot>>
 @
 \end{center}
@@ -86,7 +86,7 @@ plot(hemo, style="pairs")
 
 \begin{figure}[ht]
 \begin{center}
-\setkeys{Gin}{width=0.7\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<label=clockfig,fig=TRUE,width=7,height=7,echo=FALSE>>=
 <<clockplot>>
 @
@@ -96,7 +96,7 @@ plot(hemo, style="pairs")
 
 \begin{figure}[ht]
 \begin{center}
-\setkeys{Gin}{width=0.7\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<label=pairsfig,fig=TRUE,width=7,height=7,echo=FALSE>>=
 <<pairsplot>>
 @
