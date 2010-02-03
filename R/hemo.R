@@ -97,7 +97,17 @@ clock.plot <- function(t, x, label,
     mtext(side=4, "6 PM", cex=3/4*cex, col=col.axis)
     if (!missing(label))
         mtext(side=1, label, line=-1, cex=2/3*cex, adj=0)
-    points(x * s, x * c, col=rgb(0, 0, 1, alpha=0.3), pch=20, cex=cex)
+    col.green <- rgb(0,1,0,alpha=0.5)
+    col.orange <- rgb(1,1,0,alpha=0.5)
+    col.red <- rgb(1,0,0,alpha=0.5)
+    if (!missing(red) && !missing(orange) && !missing(green)) {
+        col <- ifelse(x < green[1], "blue",
+                      ifelse(x <= green[2], col.green,
+                             ifelse(x < orange[2], col.orange,
+                                    ifelse(x < red[2], col.red,
+                                           "black"))))
+    } else col <- rep(rgb(0,0,1,alpha=0.5), length(x))
+    points(x * s, x * c, bg=col, col="black", pch=21, cex=1.5*cex)
     ## histogram
     h <- hist(x, plot=FALSE)
     hx <- -h$mids
