@@ -160,6 +160,17 @@ read.hemo <- function(file, debug=FALSE)
     is.c <- grep("^C", lines)           # comment
     is.w <- grep("^W", lines)           # weight
     is.bp <- grep("^BP", lines)         # blood pressure
+    if (length(is.c) > 0) {
+        comment <- Ymd <- HM <- NULL
+        for (line in lines[is.c]) {
+            d <- strsplit(line, "[ ]+")
+            Ymd <- c(Ymd, d[[1]][2])
+            HM <- c(HM, d[[1]][3])
+            comment <- c(comment, d[[1]][4])
+        }
+        t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
+        c <- data.frame(t, comment)
+    } else c <- NULL
     if (length(is.w) > 0) {
         Ymd <- HM <- weight <- NULL
         for (line in lines[is.w]) {
@@ -194,7 +205,7 @@ read.hemo <- function(file, debug=FALSE)
                          pp=systolic-diastolic,
                          pulse.rate=pulse)
     } else bp <- NULL
-    rval <- list(filename=filename, bp=bp, w=w)
+    rval <- list(filename=filename, bp=bp, w=w, c=c)
     class(rval) <- "hemo"
     rval
 }
@@ -221,6 +232,7 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
             if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm Hg]",        cex=cex, tlim=tlim, show.lm=show.lm)
             if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [beats/min]", cex=cex, tlim=tlim, show.lm=show.lm)
             if (6 == w) ts.plot(x$w$t,  x$w$weight,      ylab="Weight [lb]",       cex=cex, tlim=tlim, show.lm=show.lm)
+            abline(v=x$c$t)
         }
     } else if (style == "clock") {
         if (missing(which)) which <- c(1,2,5,7)
