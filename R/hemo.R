@@ -4,7 +4,7 @@ pairs.plot <- function(x, which=c(2,3,6), cex=par("cex"))
 }
 
 ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
-                    show.stats=TRUE, show.lm=TRUE)
+                    show.stats=TRUE, show.lm=TRUE, green, orange, red)
 {
     if (!is.null(t) && !is.null(x)) {
         plot(t, x, type='n', xlab="", ylab=ylab, xlim=tlim)
@@ -17,7 +17,17 @@ ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
             lines(as.POSIXct(tt+t[1]), pp.ci[,2],col='gray')
             lines(as.POSIXct(tt+t[1]), pp.ci[,3],col='gray')
         }
-        points(t, x)
+        if (!missing(red) && !missing(orange) && !missing(green)) {
+            col.green <- rgb(0,1,0,alpha=0.5)
+            col.orange <- rgb(1,1,0,alpha=0.5)
+            col.red <- rgb(1,0,0,alpha=0.5)
+            col <- ifelse(x < green[1], "transparent",
+                          ifelse(x <= green[2], col.green,
+                                 ifelse(x < orange[2], col.orange,
+                                        ifelse(x < red[2], col.red,
+                                               "black"))))
+        } else col <- rep("transparent", length(x))
+        points(t, x, bg=col, col="black", pch=21, cex=1.5*cex)
         if (show.stats) {
             m <- sprintf("%.0f", mean(x))
             sd <- sprintf("%.0f", sd(x))
@@ -97,10 +107,10 @@ clock.plot <- function(t, x, label,
     mtext(side=4, "6 PM", cex=3/4*cex, col=col.axis)
     if (!missing(label))
         mtext(side=1, label, line=-1, cex=2/3*cex, adj=0)
-    col.green <- rgb(0,1,0,alpha=0.5)
-    col.orange <- rgb(1,1,0,alpha=0.5)
-    col.red <- rgb(1,0,0,alpha=0.5)
     if (!missing(red) && !missing(orange) && !missing(green)) {
+        col.green <- rgb(0,1,0,alpha=0.5)
+        col.orange <- rgb(1,1,0,alpha=0.5)
+        col.red <- rgb(1,0,0,alpha=0.5)
         col <- ifelse(x < green[1], "transparent",
                       ifelse(x <= green[2], col.green,
                              ifelse(x < orange[2], col.orange,
@@ -229,8 +239,10 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
         par(mfrow=c(lw, 1))
         tlim <- range(c(x$bp$t, x$w$t))
         for (w in which) {
-            if (1 == w) ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm Hg]",  cex=cex, tlim=tlim, show.lm=show.lm)
-            if (2 == w) ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm Hg]", cex=cex, tlim=tlim, show.lm=show.lm)
+            if (1 == w) ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm Hg]",  cex=cex, tlim=tlim, show.lm=show.lm,
+                green=c(90,119), orange=c(120,139.5), red=c(139.5,159))
+            if (2 == w) ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm Hg]", cex=cex, tlim=tlim, show.lm=show.lm,
+                green=c(60,79), orange=c(80,89.5), red=c(89.5,99))
             if (3 == w) ts.plot(x$bp$t, x$bp$map,        ylab="MAP [mm Hg]",       cex=cex, tlim=tlim, show.lm=show.lm)
             if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm Hg]",        cex=cex, tlim=tlim, show.lm=show.lm)
             if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [beats/min]", cex=cex, tlim=tlim, show.lm=show.lm)
