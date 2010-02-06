@@ -18,16 +18,16 @@ ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
             lines(as.POSIXct(tt+t[1]), pp.ci[,3],col='gray')
         }
         if (!missing(red) && !missing(orange) && !missing(green)) {
-            col.green <- rgb(0,1,0,alpha=0.5)
-            col.orange <- rgb(1,1,0,alpha=0.5)
-            col.red <- rgb(1,0,0,alpha=0.5)
+            col.green <- rgb(0,1,0)
+            col.orange <- rgb(1,1,0)
+            col.red <- rgb(1,0,0)
             col <- ifelse(x < green[1], "transparent",
                           ifelse(x <= green[2], col.green,
                                  ifelse(x < orange[2], col.orange,
                                         ifelse(x < red[2], col.red,
                                                "black"))))
         } else col <- rep("transparent", length(x))
-        points(t, x, bg=col, col="black", pch=21, cex=1.5*cex)
+        points(t, x, bg=col, col="black", pch=21, cex=2.0*cex)
         if (show.stats) {
             m <- sprintf("%.0f", mean(x))
             sd <- sprintf("%.0f", sd(x))
