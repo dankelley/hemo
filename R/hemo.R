@@ -169,7 +169,8 @@ read.hemo <- function(file, debug=FALSE)
             comment <- c(comment, d[[1]][4])
         }
         t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
-        c <- data.frame(t, comment)
+        o <- order(t)
+        c <- data.frame(t=t[o], comment[o])
     } else c <- NULL
     if (length(is.w) > 0) {
         Ymd <- HM <- weight <- NULL
@@ -181,7 +182,8 @@ read.hemo <- function(file, debug=FALSE)
         }
         t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
         weight <- as.numeric(weight)
-        w <- data.frame(t, weight)
+        o <- order(t)
+        w <- data.frame(t[o], weight[o])
     } else w <- NULL
     if (length(is.bp) > 0) {
         if (debug) {
@@ -200,10 +202,11 @@ read.hemo <- function(file, debug=FALSE)
         systolic <- as.numeric(systolic)
         diastolic <- as.numeric(diastolic)
         pulse <- as.numeric(pulse)
-        bp <- data.frame(t, systolic, diastolic,
-                         map=(2*diastolic + systolic)/3,
-                         pp=systolic-diastolic,
-                         pulse.rate=pulse)
+        o <- order(t)
+        bp <- data.frame(t[o], systolic[o], diastolic[o],
+                         map=(2*diastolic[o] + systolic[o])/3,
+                         pp=systolic[o]-diastolic[o],
+                         pulse.rate=pulse[o])
     } else bp <- NULL
     rval <- list(filename=filename, bp=bp, w=w, c=c)
     class(rval) <- "hemo"
