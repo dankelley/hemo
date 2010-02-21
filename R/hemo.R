@@ -1,6 +1,6 @@
-pairs.plot <- function(x, which=c(2,3,6), cex=par("cex"))
+pairs.plot <- function(x, which=2:3, cex=par("cex"))
 {
-    plot(x$bp[which])
+    pairs(x$bp[which])
 }
 
 ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
@@ -13,9 +13,9 @@ ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
             m <- lm(x ~ t0)
             tt <- seq(min(t0), max(t0), length.out=100)
             pp.ci <- predict(m, newdata=list(t0=tt), interval="confidence")
-            lines(as.POSIXct(tt+t[1]), pp.ci[,1],col='black')
-            lines(as.POSIXct(tt+t[1]), pp.ci[,2],col='gray')
-            lines(as.POSIXct(tt+t[1]), pp.ci[,3],col='gray')
+            lines(as.POSIXct(tt+t[1]), pp.ci[,1], col='black')
+            lines(as.POSIXct(tt+t[1]), pp.ci[,2], col='gray')
+            lines(as.POSIXct(tt+t[1]), pp.ci[,3], col='gray')
         }
         if (!missing(red) && !missing(orange) && !missing(green)) {
             col.green <- rgb(0,1,0)
@@ -167,9 +167,24 @@ read.hemo <- function(file, debug=FALSE)
     bp2 <- NULL
     pulse <- NULL
     time <- NULL
+    is.r <- grep("^R", lines)           # running
     is.c <- grep("^C", lines)           # comment
     is.w <- grep("^W", lines)           # weight
     is.bp <- grep("^BP", lines)         # blood pressure
+    if (length(is.r) > 0) {
+        run <- Ymd <- HM <- NULL
+        for (line in lines[is.c]) {
+            d <- strsplit(line, "[ ]+")
+            Ymd <- c(Ymd, d[[1]][2])
+            HM <- c(HM, d[[1]][3])
+            run <- c(run, d[[1]][4])
+        }
+        t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
+        o <- order(t)
+        t <- t[o]
+        run <- run[o]
+        r <- data.frame(t, run)
+    } else r <- NULL
     if (length(is.c) > 0) {
         comment <- Ymd <- HM <- NULL
         for (line in lines[is.c]) {
@@ -225,7 +240,7 @@ read.hemo <- function(file, debug=FALSE)
                          pp=systolic-diastolic,
                          pulse.rate=pulse)
     } else bp <- NULL
-    rval <- list(filename=filename, bp=bp, w=w, c=c)
+    rval <- list(filename=filename, bp=bp, w=w, c=c, r=r)
     class(rval) <- "hemo"
     rval
 }
@@ -241,7 +256,7 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
     if (style == "ts") {
         par(mgp=c(2, 3/4, 0))
         par(mar=c(2.5, 3, 1, 1.5))
-        if (missing(which)) which <- c(1,2,5,6)
+        if (missing(which)) which <- c(1,2,6)
         lw <- length(which)
         par(mfrow=c(lw, 1))
         tlim <- range(c(x$bp$t, x$w$t))
@@ -309,7 +324,7 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
             }
         }
     } else if (style == "pairs") {
-        if (missing(which)) which <- c(2,3,6)
+        if (missing(which)) which <- 2:3
         pairs.plot(x, which=which)
     } else stop("cannot handle plot style ", style)
 }
