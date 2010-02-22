@@ -282,8 +282,10 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
         par(mar=c(1.5,1.5,1.5,1.5))
         for (w in which) {
             if (1 == w) clock.plot(x$bp$t, x$bp$systolic,   " Systolic [mm Hg]",
+                R=c(90,120), R.col=c("lightgray","lightgray"),
                 cex=cex, show.mean=show.mean, green=c(90,119), orange=c(120,139.5), red=c(139.5,159))
             if (2 == w) clock.plot(x$bp$t, x$bp$diastolic,  " Diastolic [mm Hg]",
+                R=c(60,80), R.col=c("lightgray","lightgray"),
                 cex=cex, show.mean=show.mean, green=c(60,79), orange=c(80,89.5), red=c(89.5,99))
             if (3 == w) clock.plot(x$bp$t, x$bp$map,        " MAP [mm Hg]",
                 cex=cex, show.mean=show.mean)
