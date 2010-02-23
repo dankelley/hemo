@@ -101,12 +101,12 @@ clock.plot <- function(t, x, label,
     ## axes
     abline(h=0, lty="solid", col=col.axis, lwd=lwd.axis)
     abline(v=0, lty="solid", col=col.axis, lwd=lwd.axis)
-    mtext(side=1, "Midnight", cex=3/4*cex, col=col.axis)
-    mtext(side=2, "6 AM", cex=3/4*cex, col=col.axis)
-    mtext(side=3, "Noon", cex=3/4*cex, col=col.axis)
-    mtext(side=4, "6 PM", cex=3/4*cex, col=col.axis)
+    mtext(side=1, "Midnight", cex=4/5*cex, col=col.axis)
+    mtext(side=2, "6 AM",     cex=4/5*cex, col=col.axis)
+    mtext(side=3, "Noon",     cex=4/5*cex, col=col.axis)
+    mtext(side=4, "6 PM",     cex=4/5*cex, col=col.axis)
     if (!missing(label))
-        mtext(side=1, label, line=-1, cex=2/3*cex, adj=0)
+        mtext(side=1, label, line=-1, cex=cex, adj=0)
     if (!missing(red) && !missing(orange) && !missing(green)) {
         col.green <- rgb(0,1,0,alpha=0.5)
         col.orange <- rgb(1,1,0,alpha=0.5)
