@@ -173,11 +173,11 @@ read.hemo <- function(file, debug=FALSE)
     is.bp <- grep("^BP", lines)         # blood pressure
     if (length(is.r) > 0) {
         run <- Ymd <- HM <- NULL
-        for (line in lines[is.c]) {
-            d <- strsplit(line, "[ ]+")
-            Ymd <- c(Ymd, d[[1]][2])
-            HM <- c(HM, d[[1]][3])
-            run <- c(run, d[[1]][4])
+        for (line in lines[is.r]) {
+            d <- strsplit(line, "[ ]+")[[1]]
+            Ymd <- c(Ymd, d[2])
+            HM <- c(HM, d[3])
+            run <- c(run, paste(d[4:length(d)], collapse=" "))
         }
         t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
         o <- order(t)
@@ -188,10 +188,10 @@ read.hemo <- function(file, debug=FALSE)
     if (length(is.c) > 0) {
         comment <- Ymd <- HM <- NULL
         for (line in lines[is.c]) {
-            d <- strsplit(line, "[ ]+")
-            Ymd <- c(Ymd, d[[1]][2])
-            HM <- c(HM, d[[1]][3])
-            comment <- c(comment, d[[1]][4])
+            d <- strsplit(line, "[ ]+")[[1]]
+            Ymd <- c(Ymd, d[2])
+            HM <- c(HM, d[3])
+            comment <- c(comment, paste(d[4:length(d)], collapse=" "))
         }
         t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
         o <- order(t)
