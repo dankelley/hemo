@@ -256,7 +256,7 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
     if (style == "ts") {
         par(mgp=c(2, 3/4, 0))
         par(mar=c(2.5, 3, 1, 1.5))
-        if (missing(which)) which <- c(1,2,6)
+        if (missing(which)) which <- c(1:4, 6)
         lw <- length(which)
         par(mfrow=c(lw, 1))
         tlim <- range(c(x$bp$t, x$w$t))
