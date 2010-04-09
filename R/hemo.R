@@ -108,9 +108,9 @@ clock.plot <- function(t, x, label,
     if (!missing(label))
         mtext(side=1, label, line=-1, cex=cex, adj=0)
     if (!missing(red) && !missing(orange) && !missing(green)) {
-        col.green <- rgb(0,1,0,alpha=0.5)
-        col.orange <- rgb(1,1,0,alpha=0.5)
-        col.red <- rgb(1,0,0,alpha=0.5)
+        col.green <- rgb(0.3, 1.0, 0.3, alpha=0.1)
+        col.orange <- rgb(1.0, 1.0, 0.3, alpha=0.1)
+        col.red <- rgb(1.0, 0.3, 0.3, alpha=0.1)
         col <- ifelse(x < green[1], "transparent",
                       ifelse(x <= green[2], col.green,
                              ifelse(x < orange[2], col.orange,
