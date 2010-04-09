@@ -27,7 +27,7 @@ ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
                                         ifelse(x < red[2], col.red,
                                                "black"))))
         } else col <- rep("transparent", length(x))
-        points(t, x, bg=col, col="black", pch=21, cex=2.0*cex)
+        points(t, x, bg=col, col="black", pch=21, cex=cex)
         if (show.stats) {
             m <- sprintf("%.0f", mean(x))
             sd <- sprintf("%.0f", sd(x))
@@ -117,7 +117,7 @@ clock.plot <- function(t, x, label,
                                     ifelse(x < red[2], col.red,
                                            "black"))))
     } else col <- rep("transparent", length(x))
-    points(x * s, x * c, bg=col, col="black", pch=21, cex=1.5*cex)
+    points(x * s, x * c, bg=col, col="black", pch=20, cex=cex)
     ## histogram
     h <- hist(x, plot=FALSE)
     hx <- -h$mids
