@@ -173,18 +173,20 @@ read.hemo <- function(file, debug=FALSE)
     is.w <- grep("^W", lines)           # weight
     is.bp <- grep("^BP", lines)         # blood pressure
     if (length(is.r) > 0) {
-        run <- Ymd <- HM <- NULL
+        duration <- details <- Ymd <- HM <- NULL
         for (line in lines[is.r]) {
             d <- strsplit(line, "[ ]+")[[1]]
             Ymd <- c(Ymd, d[2])
             HM <- c(HM, d[3])
-            run <- c(run, paste(d[4:length(d)], collapse=" "))
+            duration <- c(duration, as.numeric(d[4]))
+            details <- c(details, paste(d[5:length(d)], collapse=" "))
         }
         t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
         o <- order(t)
         t <- t[o]
-        run <- run[o]
-        r <- data.frame(t, run)
+        duration <- duration[o]
+        details <- details[o]
+        r <- data.frame(t, duration, details)
     } else r <- NULL
     if (length(is.c) > 0) {
         comment <- Ymd <- HM <- NULL
@@ -270,10 +272,15 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
             if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm Hg]",        cex=cex, tlim=tlim, show.lm=show.lm)
             if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [beats/min]", cex=cex, tlim=tlim, show.lm=show.lm)
             if (6 == w) ts.plot(x$w$t,  x$w$weight,      ylab="Weight [lb]",       cex=cex, tlim=tlim, show.lm=show.lm)
+            if (7 == w) {
+                print(x$r)
+                ts.plot(x$r$t, cumsum(x$r$duration), ylab="Running Time", cex=cex, tlim=tlim, show.lm=show.lm)
+            }
+            if (99 == w) stop("cannot show statistics yet")
             abline(v=x$c$t)
         }
     } else if (style == "clock") {
-        if (missing(which)) which <- c(1,2,5,7)
+        if (missing(which)) which <- c(1,2,5,99)
         lw <- length(which)
         if (lw == 2)
             par(mfrow=c(2,2))
@@ -297,7 +304,8 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
             if (6 == w) clock.plot(x$w$t,  x$w$weight,      " Weight [lb]",
                 cex=cex, show.mean=show.mean)
             ## Stats
-            if (7 == w) {
+            if (7 == w) stop("cannot display running data in clock form")
+            if (99 == w) {
                 par(mar=c(0,0,0,0))
                 plot(0:1, 0:1, axes=FALSE, type='n', xlab="", ylab="")
                 xx <- 0

@@ -37,7 +37,8 @@
     \item \code{which=4} for pulse pressure.
     \item \code{which=5} for pulse rate.
     \item \code{which=6} for weight.
-    \item \code{which=7} for statistics.
+    \item \code{which=7} for cumulative running time (only for \code{style="ts"}).
+    \item \code{which=99} for statistics (only for \code{style="clock"}.)
   }
   If \code{which} is not provided, then the value \code{c(1,2,6)}
   will be used for \code{ts} plots,  \code{c(1,2,5,7)} for
