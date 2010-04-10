@@ -264,19 +264,22 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
         par(mfrow=c(lw, 1))
         tlim <- range(c(x$bp$t, x$w$t))
         for (w in which) {
-            if (1 == w) ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm Hg]",  cex=cex, tlim=tlim, show.lm=show.lm,
-                green=c(90,119), orange=c(120,139.5), red=c(139.5,159))
-            if (2 == w) ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm Hg]", cex=cex, tlim=tlim, show.lm=show.lm,
-                green=c(60,79), orange=c(80,89.5), red=c(89.5,99))
-            if (3 == w) ts.plot(x$bp$t, x$bp$map,        ylab="MAP [mm Hg]",       cex=cex, tlim=tlim, show.lm=show.lm)
-            if (4 == w) ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm Hg]",        cex=cex, tlim=tlim, show.lm=show.lm)
-            if (5 == w) ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [beats/min]", cex=cex, tlim=tlim, show.lm=show.lm)
-            if (6 == w) ts.plot(x$w$t,  x$w$weight,      ylab="Weight [lb]",       cex=cex, tlim=tlim, show.lm=show.lm)
-            if (7 == w) {
-                print(x$r)
-                ts.plot(x$r$t, cumsum(x$r$duration), ylab="Running Time", cex=cex, tlim=tlim, show.lm=show.lm)
-            }
-            if (99 == w) stop("cannot show statistics yet")
+            if (1 == w)
+                ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm Hg]",  cex=cex, tlim=tlim, show.lm=show.lm, green=c(90,119), orange=c(120,139.5), red=c(139.5,159))
+            if (2 == w)
+                ts.plot(x$bp$t, x$bp$diastolic,  ylab="Diastolic [mm Hg]", cex=cex, tlim=tlim, show.lm=show.lm, green=c(60,79), orange=c(80,89.5), red=c(89.5,99))
+            if (3 == w)
+                ts.plot(x$bp$t, x$bp$map,        ylab="MAP [mm Hg]",       cex=cex, tlim=tlim, show.lm=show.lm)
+            if (4 == w)
+                ts.plot(x$bp$t, x$bp$pp,         ylab="PP [mm Hg]",        cex=cex, tlim=tlim, show.lm=show.lm)
+            if (5 == w)
+                ts.plot(x$bp$t, x$bp$pulse.rate, ylab="Pulse [beats/min]", cex=cex, tlim=tlim, show.lm=show.lm)
+            if (6 == w)
+                ts.plot(x$w$t,  x$w$weight,      ylab="Weight [lb]",       cex=cex, tlim=tlim, show.lm=show.lm)
+            if (7 == w)
+                ts.plot(x$r$t, cumsum(x$r$duration), ylab="Running Time",  cex=cex, tlim=tlim, show.lm=show.lm)
+            if (99 == w)
+                stop("cannot show statistics yet")
             abline(v=x$c$t)
         }
     } else if (style == "clock") {
@@ -289,22 +292,29 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
         par(mgp=c(1.25,1.5/3,0))
         par(mar=c(1.5,1.5,1.5,1.5))
         for (w in which) {
-            if (1 == w) clock.plot(x$bp$t, x$bp$systolic,   " Systolic [mm Hg]",
-                R=c(90,120), R.col=c("lightgray","lightgray"),
+            if (1 == w)
+                clock.plot(x$bp$t, x$bp$systolic,   " Systolic [mm Hg]",
+                           R=c(90,120), R.col=c("lightgray","lightgray"),
                 cex=cex, show.mean=show.mean, green=c(90,119), orange=c(120,139.5), red=c(139.5,159))
-            if (2 == w) clock.plot(x$bp$t, x$bp$diastolic,  " Diastolic [mm Hg]",
-                R=c(60,80), R.col=c("lightgray","lightgray"),
-                cex=cex, show.mean=show.mean, green=c(60,79), orange=c(80,89.5), red=c(89.5,99))
-            if (3 == w) clock.plot(x$bp$t, x$bp$map,        " MAP [mm Hg]",
-                cex=cex, show.mean=show.mean)
-            if (4 == w) clock.plot(x$bp$t, x$bp$pp,         " PP [mm Hg]",
-                cex=cex, show.mean=show.mean)
-            if (5 == w) clock.plot(x$bp$t, x$bp$pulse.rate, " Pulse [beats/min]",
-                cex=cex, show.mean=show.mean)
-            if (6 == w) clock.plot(x$w$t,  x$w$weight,      " Weight [lb]",
-                cex=cex, show.mean=show.mean)
+            if (2 == w)
+                clock.plot(x$bp$t, x$bp$diastolic,  " Diastolic [mm Hg]",
+                           R=c(60,80), R.col=c("lightgray","lightgray"),
+                           cex=cex, show.mean=show.mean, green=c(60,79), orange=c(80,89.5), red=c(89.5,99))
+            if (3 == w)
+                clock.plot(x$bp$t, x$bp$map,        " MAP [mm Hg]",
+                           cex=cex, show.mean=show.mean)
+            if (4 == w)
+                clock.plot(x$bp$t, x$bp$pp,         " PP [mm Hg]",
+                           cex=cex, show.mean=show.mean)
+            if (5 == w)
+                clock.plot(x$bp$t, x$bp$pulse.rate, " Pulse [beats/min]",
+                           cex=cex, show.mean=show.mean)
+            if (6 == w)
+                clock.plot(x$w$t,  x$w$weight,      " Weight [lb]",
+                           cex=cex, show.mean=show.mean)
             ## Stats
-            if (7 == w) stop("cannot display running data in clock form")
+            if (7 == w)
+                stop("cannot display running data in clock form")
             if (99 == w) {
                 par(mar=c(0,0,0,0))
                 plot(0:1, 0:1, axes=FALSE, type='n', xlab="", ylab="")
