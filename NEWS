@@ -1,2 +1,4 @@
+0.1-2
+- add argument 'show.spline' to plot.hemo()
 0.1-1
 - first version

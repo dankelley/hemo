@@ -7,7 +7,8 @@
 \description{Plot hemo data}
 
 \usage{\method{plot}{hemo}(x, style=c("ts", "clock", "pairs"),
-     which, cex=par("cex"), debug=FALSE, show.mean=TRUE, show.lm=TRUE, ...)}
+     which, cex=par("cex"), debug=FALSE, 
+     show.mean=TRUE, show.lm=FALSE, show.spline=TRUE, ...)}
 
 \arguments{
   \item{x}{\code{hemo} object, typically result of \code{\link{read.hemo}}.}
@@ -24,6 +25,11 @@
   \item{show.lm}{boolean flag, set to \code{TRUE} to get a linear
     regression added to the plot (with confidence intervals on the
     prediction).}
+  \item{show.spline}{boolean flag, set to \code{TRUE} to get a smoothing
+    spline added to the plot.  This will have one degree of freedome per
+    month of data, or 2 degrees of freedom if there are fewer than 2
+    months of data.  No spline will be computed unless there are 10 data
+    points.}
   \item{\dots}{optional arguments passed to plotting functions.}
 }
 

@@ -4,18 +4,29 @@ pairs.plot <- function(x, which=2:3, cex=par("cex"))
 }
 
 ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
-                    show.stats=TRUE, show.lm=TRUE, green, orange, red)
+                    show.stats=TRUE, show.lm=FALSE, show.spline=TRUE,
+                    green, orange, red)
 {
     if (!is.null(t) && !is.null(x)) {
         plot(t, x, type='n', xlab="", ylab=ylab, xlim=tlim)
         if (show.lm) {
-            t0 <- t - t[1]          # otherwise lm is poor
-            m <- lm(x ~ t0)
+            t0 <- as.numeric(t) - as.numeric(t[1]) # otherwise lm is poor
+            m <- lm(x ~ t0 + I(t0^2) + I(t0^3) + I(t0^4))
             tt <- seq(min(t0), max(t0), length.out=100)
             pp.ci <- predict(m, newdata=list(t0=tt), interval="confidence")
-            lines(as.POSIXct(tt+t[1]), pp.ci[,1], col='black')
+            lines(as.POSIXct(tt+t[1]), pp.ci[,1], col='black', lwd=2)
             lines(as.POSIXct(tt+t[1]), pp.ci[,2], col='gray')
             lines(as.POSIXct(tt+t[1]), pp.ci[,3], col='gray')
+        }
+        if (show.spline) {
+            t0 <- as.numeric(t) - as.numeric(t[1])
+            if (length(t0) > 10) {
+                df <- max(2, diff(range(t0)) / 86400 / 30)
+                m <- smooth.spline(x ~ t0, df = df) # one df per month
+                tt <- seq(min(t0), max(t0), length.out=100)
+                pred <- predict(m, tt)$y
+                lines(as.POSIXct(tt+t[1]), pred, col='pink', lwd=3)
+            }
         }
         if (!missing(red) && !missing(orange) && !missing(green)) {
             col.green <- rgb(0,1,0)
@@ -53,7 +64,7 @@ clock.plot <- function(t, x, label,
     }
     if (length(x) != length(t)) stop("lengths of t and x do not match")
     tl <- as.POSIXlt(t)
-    hour <- tl$hour + tl$min / 60
+    hour <- tl$hour + (tl$min + tl$sec / 60) / 60
     hour.angle <- pi + hour / 24 * 2 * pi
     s <- sin(hour.angle)
     c <- cos(hour.angle)
@@ -116,9 +127,10 @@ clock.plot <- function(t, x, label,
                              ifelse(x < orange[2], col.orange,
                                     ifelse(x < red[2], col.red,
                                            "black"))))
-    } else col <- rep("transparent", length(x))
-    points(x * s, x * c, bg=col, col=col, lwd=0, pch=21, cex=1.5*cex)
-    points(x * s, x * c, bg=col, col="red", pch=20, cex=0.5*cex)
+    } else col <- rgb(.1, .1, .1, alpha=0.3)
+#    points(x * s, x * c, bg=col, col=col, lwd=0, pch=21, cex=1.5*cex)
+#    points(x * s, x * c, bg=col, col="red", pch=20, cex=0.6*cex)
+    points(x * s, x * c, bg=col, col='black', pch=21, lwd=1/3, cex=0.7*cex)
     ## histogram
     h <- hist(x, plot=FALSE)
     hx <- -h$mids
@@ -251,7 +263,7 @@ read.hemo <- function(file, debug=FALSE)
 plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
                       cex=par("cex"), debug=FALSE,
                       show.mean=TRUE,
-                      show.lm=TRUE, ...)
+                      show.lm=FALSE, show.spline=TRUE, ...)
 {
     style <- match.arg(style)
     opar <- par(no.readonly=TRUE)
