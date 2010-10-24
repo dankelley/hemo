@@ -1,11 +1,10 @@
 export(
-#       clock.plot,
+##       clock.plot,
        print.summary.hemo,
        summary.hemo,
        read.hemo,
        plot.hemo
        )
-
 S3method(plot, hemo)
 S3method(print, summary.hemo)
 S3method(summary, hemo)

@@ -156,7 +156,7 @@ summary.hemo <- function(object, ...)
     res
 }
 
-read.hemo <- function(file, debug=FALSE)
+read.hemo <- function(file, monitor=FALSE, debug=FALSE)
 {
     if (is.character(file)) {
         filename <- file
@@ -187,6 +187,8 @@ read.hemo <- function(file, debug=FALSE)
     if (length(is.r) > 0) {
         duration <- details <- Ymd <- HM <- NULL
         for (line in lines[is.r]) {
+            if (monitor)
+                cat("is.r:", line, "\n")
             d <- strsplit(line, "[ ]+")[[1]]
             Ymd <- c(Ymd, d[2])
             HM <- c(HM, d[3])
@@ -203,6 +205,8 @@ read.hemo <- function(file, debug=FALSE)
     if (length(is.c) > 0) {
         comment <- Ymd <- HM <- NULL
         for (line in lines[is.c]) {
+            if (monitor)
+                cat("is.c:", line, "\n")
             d <- strsplit(line, "[ ]+")[[1]]
             Ymd <- c(Ymd, d[2])
             HM <- c(HM, d[3])
@@ -217,6 +221,8 @@ read.hemo <- function(file, debug=FALSE)
     if (length(is.w) > 0) {
         Ymd <- HM <- weight <- NULL
         for (line in lines[is.w]) {
+            if (monitor)
+                cat("is.w:", line, "\n")
             d <- strsplit(line, "[ ]+")
             Ymd <- c(Ymd, d[[1]][2])
             HM <- c(HM, d[[1]][3])
@@ -235,6 +241,8 @@ read.hemo <- function(file, debug=FALSE)
         }
         Ymd <- HM <- systolic <- diastolic <- pulse <- NULL
         for (line in lines[is.bp]) {
+            if (monitor)
+                cat("is.bp:", line, "\n")
             d <- strsplit(line, "[ ]+")
             Ymd <- c(Ymd, d[[1]][2])
             HM <- c(HM, d[[1]][3])

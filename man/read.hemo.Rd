@@ -6,11 +6,13 @@
 
 \description{Read a hemo data file}
 
-\usage{read.hemo(file, debug=FALSE)}
+\usage{read.hemo(file, monitor=FALSE, debug=FALSE)}
 
 \arguments{
   \item{file}{a connection or a character string giving the name of the
     file to load.}
+  \item{monitor}{optional boolean, set to \code{TRUE} to print an
+    indication of each line read.}
   \item{debug}{a flag that can be set to \code{TRUE} to turn on debugging.}
 }
 
