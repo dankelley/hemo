@@ -1,4 +1,5 @@
 0.1-2
-- add argument 'show.spline' to plot.hemo()
+- read.hemo(): add argument 'monitor'
+- plot.hemo(): add argument 'show.spline'
 0.1-1
 - first version
