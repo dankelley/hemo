@@ -8,7 +8,7 @@ ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
                     green, orange, red)
 {
     if (!is.null(t) && !is.null(x)) {
-        plot(t, x, type='n', xlab="", ylab=ylab, xlim=tlim)
+        oce::oce.plot.ts(t, x, type='n', xlab="", ylab=ylab, xlim=tlim)
         if (show.lm) {
             t0 <- as.numeric(t) - as.numeric(t[1]) # otherwise lm is poor
             m <- lm(x ~ t0 + I(t0^2) + I(t0^3) + I(t0^4))
@@ -58,9 +58,8 @@ clock.plot <- function(t, x, label,
     ring <- function(R=1, col="gray", lty="dotted", lwd=0.5*par("lwd"))
     {
         i <- seq(0, 2*pi, length.out=360)
-        for (rval in R) {
+        for (rval in R)
             lines(rval * sin(i), rval * cos(i), col=col, lty=lty, lwd=lwd)
-        }
     }
     if (length(x) != length(t)) stop("lengths of t and x do not match")
     tl <- as.POSIXlt(t)
@@ -88,9 +87,8 @@ clock.plot <- function(t, x, label,
     axis(side=1, at=-at, labels=at, pos=0, cex.axis=0.9*cex, col=col.axis, col.axis=col.axis, mgp=c(1,1/4,0), tcl=-0.3)
     box()
     if (FALSE) {
-        for (r in abs(at)) {
+        for (r in abs(at))
             ring(r, col=col.axis, lty="solid", lwd=0.5*par("lwd"))
-        }
     }
     if (!missing(R)) {
         lR <- length(R)
@@ -100,9 +98,8 @@ clock.plot <- function(t, x, label,
         if (lcol < lR) R.col <- c(R.col, rep(R.col[1], lR-lcol))
         if (llwd < lR) R.lwd <- c(R.lwd, rep(R.lwd[1], lR-llwd))
         if (llty < lR) R.lty <- c(R.lty, rep(R.lty[1], lR-llty))
-        for (i in 1:lR) {
+        for (i in 1:lR)
             ring(R[i], col=R.col[i], lwd=R.lwd[i], lty=R.lty[i])
-        }
     }
     if (show.mean) {
         xmean <- mean(x)
@@ -128,8 +125,8 @@ clock.plot <- function(t, x, label,
                                     ifelse(x < red[2], col.red,
                                            "black"))))
     } else col <- rgb(.1, .1, .1, alpha=0.3)
-#    points(x * s, x * c, bg=col, col=col, lwd=0, pch=21, cex=1.5*cex)
-#    points(x * s, x * c, bg=col, col="red", pch=20, cex=0.6*cex)
+    ## points(x * s, x * c, bg=col, col=col, lwd=0, pch=21, cex=1.5*cex)
+    ## points(x * s, x * c, bg=col, col="red", pch=20, cex=0.6*cex)
     points(x * s, x * c, bg=col, col='black', pch=21, lwd=1/3, cex=0.7*cex)
     ## histogram
     h <- hist(x, plot=FALSE)
@@ -149,9 +146,9 @@ print.summary.hemo <- function(x, digits=max(6, getOption("digits")-1), ...)
 
 summary.hemo <- function(object, ...)
 {
-    if (!inherits(object, "hemo")) stop("method is only for hemo objects")
-    res <- list(filename=object$filename,
-                bp=object$bp)
+    if (!inherits(object, "hemo"))
+        stop("method is only for hemo objects")
+    res <- list(filename=object$filename, bp=object$bp)
     class(res) <- "summary.hemo"
     res
 }
@@ -205,7 +202,7 @@ read.hemo <- function(file, monitor=FALSE, debug=FALSE)
     if (length(is.c) > 0) {
         comment <- Ymd <- HM <- NULL
         for (line in lines[is.c]) {
-            if (monitor)
+            if (monitor) 
                 cat("is.c:", line, "\n")
             d <- strsplit(line, "[ ]+")[[1]]
             Ymd <- c(Ymd, d[2])
@@ -217,11 +214,13 @@ read.hemo <- function(file, monitor=FALSE, debug=FALSE)
         t <- t[o]
         comment <- comment[o]
         c <- data.frame(t, comment)
-    } else c <- NULL
+    } else {
+        c <- NULL
+    }
     if (length(is.w) > 0) {
         Ymd <- HM <- weight <- NULL
         for (line in lines[is.w]) {
-            if (monitor)
+            if (monitor) 
                 cat("is.w:", line, "\n")
             d <- strsplit(line, "[ ]+")
             Ymd <- c(Ymd, d[[1]][2])
@@ -234,11 +233,12 @@ read.hemo <- function(file, monitor=FALSE, debug=FALSE)
         t <- t[o]
         weight <- weight[o]
         w <- data.frame(t, weight)
-    } else w <- NULL
+    } else {
+        w <- NULL
+    }
     if (length(is.bp) > 0) {
-        if (debug) {
+        if (debug)
             cat("The following are to be interpreted as blood-pressure lines:\n")
-        }
         Ymd <- HM <- systolic <- diastolic <- pulse <- NULL
         for (line in lines[is.bp]) {
             if (monitor)
@@ -262,7 +262,9 @@ read.hemo <- function(file, monitor=FALSE, debug=FALSE)
                          map=(2*diastolic + systolic)/3,
                          pp=systolic-diastolic,
                          pulse.rate=pulse)
-    } else bp <- NULL
+    } else {
+        bp <- NULL
+    }
     rval <- list(filename=filename, bp=bp, w=w, c=c, r=r)
     class(rval) <- "hemo"
     rval
@@ -279,7 +281,8 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
     if (style == "ts") {
         par(mgp=c(2, 3/4, 0))
         par(mar=c(2.5, 3, 1, 1.5))
-        if (missing(which)) which <- c(1, 2, 6)
+        if (missing(which))
+            which <- c(1, 2, 6)
         lw <- length(which)
         par(mfrow=c(lw, 1))
         tlim <- range(c(x$bp$t, x$w$t))
@@ -303,7 +306,8 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
             abline(v=x$c$t)
         }
     } else if (style == "clock") {
-        if (missing(which)) which <- c(1,2,5,99)
+        if (missing(which))
+            which <- c(1,2,5,99)
         lw <- length(which)
         if (lw == 2)
             par(mfrow=c(2,2))
@@ -315,7 +319,7 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
             if (1 == w)
                 clock.plot(x$bp$t, x$bp$systolic,   " Systolic [mm Hg]",
                            R=c(90,120), R.col=c("lightgray","lightgray"),
-                cex=cex, show.mean=show.mean, green=c(90,119), orange=c(120,139.5), red=c(139.5,159))
+                           cex=cex, show.mean=show.mean, green=c(90,119), orange=c(120,139.5), red=c(139.5,159))
             if (2 == w)
                 clock.plot(x$bp$t, x$bp$diastolic,  " Diastolic [mm Hg]",
                            R=c(60,80), R.col=c("lightgray","lightgray"),
@@ -365,7 +369,9 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
             }
         }
     } else if (style == "pairs") {
-        if (missing(which)) which <- 2:3
+        if (missing(which))
+            which <- 2:3
         pairs.plot(x, which=which)
-    } else stop("cannot handle plot style ", style)
+    } else
+        stop("cannot handle plot style ", style)
 }
