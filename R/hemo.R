@@ -1,3 +1,4 @@
+library(oce)
 pairs.plot <- function(x, which=2:3, cex=par("cex"))
 {
     pairs(x$bp[which])

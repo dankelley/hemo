@@ -4,7 +4,7 @@ Date: 2011-02-20
 Title: Analysis of health data
 Author: Dan Kelley <Dan.Kelley@Dal.Ca>
 Maintainer: Dan Kelley <Dan.Kelley@Dal.Ca>
-Depends: R (>= 0.99)
+Depends: R (>= 0.99), oce
 Description: Supports the analysis of health data,
  presently, as measured by a heart monitor.
 License: GPL (>= 2)
