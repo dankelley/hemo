@@ -1,3 +1,5 @@
+0.1-3
+- read.hemo(): discard data at improperly-formatted times
 0.1-2
 - read.hemo(): add argument 'monitor'
 - plot.hemo(): add argument 'show.spline'

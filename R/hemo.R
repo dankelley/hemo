@@ -4,7 +4,7 @@ pairs.plot <- function(x, which=2:3, cex=par("cex"))
     pairs(x$bp[which])
 }
 
-ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
+ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t, na.rm=TRUE),
                     show.stats=TRUE, show.lm=FALSE, show.spline=TRUE,
                     green, orange, red)
 {
@@ -22,7 +22,7 @@ ts.plot <- function(t, x, ylab="", cex=par("cex"), tlim=range(t),
         if (show.spline) {
             t0 <- as.numeric(t) - as.numeric(t[1])
             if (length(t0) > 10) {
-                df <- max(2, diff(range(t0)) / 86400 / 30)
+                df <- max(2, diff(range(t0, na.rm=TRUE)) / 86400 / 30)
                 m <- smooth.spline(x ~ t0, df = df) # one df per month
                 tt <- seq(min(t0), max(t0), length.out=100)
                 pred <- predict(m, tt)$y
@@ -194,6 +194,10 @@ read.hemo <- function(file, monitor=FALSE, debug=FALSE)
             details <- c(details, paste(d[5:length(d)], collapse=" "))
         }
         t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
+        if (any (is.na(t))) {
+            cat("bad time data:\n")
+            print(paste(Ymd, HM)[is.na(t)])
+        }
         o <- order(t)
         t <- t[o]
         duration <- duration[o]
@@ -211,6 +215,10 @@ read.hemo <- function(file, monitor=FALSE, debug=FALSE)
             comment <- c(comment, paste(d[4:length(d)], collapse=" "))
         }
         t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
+        if (any (is.na(t))) {
+            cat("bad time data:\n")
+            print(paste(Ymd, HM)[is.na(t)])
+        }
         o <- order(t)
         t <- t[o]
         comment <- comment[o]
@@ -229,7 +237,15 @@ read.hemo <- function(file, monitor=FALSE, debug=FALSE)
             weight <- c(weight, d[[1]][4])
         }
         t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
+        timeOK <- !is.na(t)
+        if (sum(!timeOK)) {
+            cat("bad time data:\n")
+            print(paste(Ymd, HM)[!timeOK])
+
+        }
         weight <- as.numeric(weight)
+        t <- t[timeOK]
+        weight <- weight[timeOK]
         o <- order(t)
         t <- t[o]
         weight <- weight[o]
@@ -252,6 +268,10 @@ read.hemo <- function(file, monitor=FALSE, debug=FALSE)
             pulse <- c(pulse, d[[1]][6])
         }
         t <- strptime(paste(Ymd, HM), format="%Y-%m-%d %H:%M")
+        if (any (is.na(t))) {
+            cat("bad time data:\n")
+            print(paste(Ymd, HM)[is.na(t)])
+        }
         systolic <- as.numeric(systolic)
         diastolic <- as.numeric(diastolic)
         pulse <- as.numeric(pulse)
@@ -286,7 +306,7 @@ plot.hemo <- function(x, style=c("ts","clock","pairs"), which,
             which <- c(1, 2, 6)
         lw <- length(which)
         par(mfrow=c(lw, 1))
-        tlim <- range(c(x$bp$t, x$w$t))
+        tlim <- range(c(x$bp$t, x$w$t), na.rm=TRUE)
         for (w in which) {
             if (1 == w)
                 ts.plot(x$bp$t, x$bp$systolic,   ylab="Systolic [mm Hg]",  cex=cex, tlim=tlim, show.lm=show.lm, green=c(90,119), orange=c(120,139.5), red=c(139.5,159))
